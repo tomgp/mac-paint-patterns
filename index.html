@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <title>Mac Paint Patterns</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+  </body>
+  <script charset="utf-8">
+
+
+    var data = d3.range(1,37,1);
+    var blockDim = 50;
+    var grid = 10;
+
+    var defs = d3.select('body')
+      .append('svg')
+      .attr("width", blockDim * grid)
+      .attr("height", blockDim * grid)
+      .append('defs');
+
+    defs.selectAll('pattern').data( data )
+      .enter()
+        .append('pattern')
+          .attr({
+            id:function(d){ return 'mp'+d; },
+            patternUnits:'userSpaceOnUse',
+            width:16,
+            height:16
+          })
+        .append('image')
+          .attr({
+            'xlink:href':function(d){ return d+'.gif'; },
+            x:0,
+            y:0,
+            width:16,
+            height:16
+          });
+
+      d3.select('svg').selectAll('rect').data(data).enter()
+        .append('rect')
+          .attr({
+            fill:function(d){ return 'url(#mp'+d+')'},
+            x:function(d,i){ return (i%10)*blockDim; },
+            y:function(d,i){ return Math.floor(i/10)*blockDim; },
+            width:blockDim,
+            height:blockDim
+          })
+  </script>
+</html>
