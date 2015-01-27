@@ -8,7 +8,20 @@
 }
 
 .land{
-  fill:url("#mp12-t");
+  stroke:none;
+}
+
+button{
+  border:1px solid #000;
+  background-color:#FFF;
+  cursor: pointer;
+}
+
+button:hover{
+  border:1px solid #fff;
+  background-color:#000;
+  color:#fff;
+  cursor: pointer;
 }
 
 </style>
@@ -16,8 +29,9 @@
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
   <script>
+  var patternNumber = 18;
   var ts = new Date().getTime();
-  var width = 960,
+  var width = 480,
   height = 480;
 
   var π = Math.PI,
@@ -43,6 +57,14 @@
 
   var patterns = d3.range(1,37,1).concat([ "12-t" , "17-t" ]);
 
+  var input = d3.select('body').append('div').attr('class','input')
+    .append('button').text('change pattern');
+
+  input.on('click',function(d){
+    patternNumber = (patternNumber + 1) % 36;
+    return false;
+  });
+
   svg.append('defs').selectAll('pattern').data( patterns )
     .enter()
     .append('pattern')
@@ -62,9 +84,10 @@
     });
 
   d3.json("world50m.json", function(error, world) {
-    svg.append("path")
+    var land = svg.append("path")
       .datum(topojson.feature(world, world.objects.land))
       .attr("class", "land")
+      .attr("fill",'url("#mp'+patternNumber+'")')
       .attr("d", path);
 
     var night = svg.append("path")
@@ -80,6 +103,7 @@
     function redraw(date) {
       if(!date) date = new Date();
       night.datum(circle.origin(antipode(solarPosition(date)))).attr("d", path);
+      land.attr("fill",'url("#mp'+patternNumber+'")');
     }
   });
 
