@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>canvas</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="scripts/paper.js" charset="utf-8"></script>
+    <script charset="utf-8">
+      //console.clear();
+    </script>
+  </head>
+  <body>
+
+    <canvas id="canvas" width="300" height="300" id="canvas"></canvas>
+  </body>
+  <script type="text/paperscript" canvas="canvas">
+
+    //put all the patterns on the page as images
+    d3.select('body').selectAll('img').data(d3.range(1,37,1))
+      .enter()
+        .append('img')
+          .attr({
+            'src':function(d){ return d+'.gif'; },
+            'id':function(d){ return 'mp'+d; }
+          });
+
+    new Raster('mp1').on('load', function() {
+      var raster = this;
+      var pixelValues = [];
+      for (var y = 0; y < raster.height; y++) {
+        for (var x = 0; x < raster.width; x++) {
+          pixelValues.push(raster.getPixel(x, y).gray);
+        }
+      }
+      console.log('v', d3.variance(pixelValues) );
+      console.log('m', d3.mean(pixelValues) );
+    });
+
+  </script>
+</html>
